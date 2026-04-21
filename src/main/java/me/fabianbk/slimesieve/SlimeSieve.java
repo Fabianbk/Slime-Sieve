@@ -1,4 +1,4 @@
-package me.CHANGEME.slimefunaddon;
+package me.fabianbk.slimesieve;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,7 +13,7 @@ import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 
-public class ExampleAddon extends JavaPlugin implements SlimefunAddon {
+public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
 
     @Override
     public void onEnable() {
@@ -28,18 +28,18 @@ public class ExampleAddon extends JavaPlugin implements SlimefunAddon {
          * 1. Creating a new Category
          * This Category will use the following ItemStack
          */
-        ItemStack itemGroupItem = new CustomItemStack(Material.DIAMOND, "&4Addon Category", "", "&a> Click to open");
+        ItemStack sieveGroupItem = new CustomItemStack(Material.SCAFFOLDING, "Slime Sieve", "", "&a> Click to open");
 
         // Give your Category a unique id.
-        NamespacedKey itemGroupId = new NamespacedKey(this, "addon_category");
-        ItemGroup itemGroup = new ItemGroup(itemGroupId, itemGroupItem);
+        NamespacedKey sieveGroupId = new NamespacedKey(this, "sieve_category");
+        ItemGroup sieveGroup = new ItemGroup(sieveGroupId, sieveGroupItem);
 
         /*
          * 2. Create a new SlimefunItemStack
          * This class has many constructors, it is very important
          * that you give each item a unique id.
          */
-        SlimefunItemStack slimefunItem = new SlimefunItemStack("COOL_DIAMOND", Material.DIAMOND, "&4Cool Diamond", "&c+20% Coolness");
+        SlimefunItemStack sieveItem = new SlimefunItemStack("SIEVE", Material.SCAFFOLDING, "Sieve", "&7Used for sifting dirt, sand, and gravel.");
 
         /*
          * 3. Creating a Recipe
@@ -48,7 +48,11 @@ public class ExampleAddon extends JavaPlugin implements SlimefunAddon {
          * The machine in which this recipe is crafted in is specified
          * further down as the RecipeType.
          */
-        ItemStack[] recipe = { new ItemStack(Material.EMERALD), null, new ItemStack(Material.EMERALD), null, new ItemStack(Material.DIAMOND), null, new ItemStack(Material.EMERALD), null, new ItemStack(Material.EMERALD) };
+        ItemStack[] sieveRecipe = {
+                new ItemStack(Material.OAK_PLANKS), new ItemStack(Material.STRING), new ItemStack(Material.OAK_PLANKS),
+                new ItemStack(Material.OAK_PLANKS), new ItemStack(Material.STRING), new ItemStack(Material.OAK_PLANKS),
+                new ItemStack(Material.STICK),      null                          , new ItemStack(Material.STICK)
+        };
 
         /*
          * 4. Registering the Item
@@ -57,8 +61,8 @@ public class ExampleAddon extends JavaPlugin implements SlimefunAddon {
          * which this item is crafted in.
          * Recipe Types from Slimefun itself will automatically add the recipe to that machine.
          */
-        SlimefunItem item = new SlimefunItem(itemGroup, slimefunItem, RecipeType.ENHANCED_CRAFTING_TABLE, recipe);
-        item.register(this);
+        Sieve sieve = new Sieve(sieveGroup, sieveItem, RecipeType.ENHANCED_CRAFTING_TABLE, sieveRecipe);
+        sieve.register(this);
     }
 
     @Override
