@@ -2,7 +2,9 @@ package me.fabianbk.slimesieve;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
@@ -71,8 +73,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
                 "STRING_MESH",
                 Material.WHITE_CARPET,
                 "&fString Mesh",
-                "&7Basic mesh for sieving materials",
-                "&7Chance: +0% (Base)"
+                "&7Basic mesh for sieving materials"
         );
         ItemStack[] stringMeshRecipe = {
                 new ItemStack(Material.STRING), new ItemStack(Material.STRING), new ItemStack(Material.STRING),
@@ -86,8 +87,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
                 "FLINT_MESH",
                 Material.LIGHT_GRAY_CARPET,
                 "&7Flint Mesh",
-                "&7Improved mesh for better sieving",
-                "&7Chance: +5%"
+                "&7Improved mesh for better sieving"
         );
         ItemStack[] flintMeshRecipe = {
                 new ItemStack(Material.FLINT), new ItemStack(Material.FLINT), new ItemStack(Material.FLINT),
@@ -101,8 +101,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
                 "IRON_MESH",
                 Material.GRAY_CARPET,
                 "&fIron Mesh",
-                "&7Durable mesh for advanced sieving",
-                "&7Chance: +10%"
+                "&7Durable mesh for advanced sieving"
         );
         ItemStack[] ironMeshRecipe = {
                 new ItemStack(Material.IRON_INGOT), new ItemStack(Material.IRON_INGOT), new ItemStack(Material.IRON_INGOT),
@@ -132,7 +131,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         // ==========================================
 
         // --- Iron ---
-        ironOrePiece = new SlimefunItemStack("IRON_ORE_PIECE", Material.RAW_IRON, "&fIron Ore Piece", "&7Small piece of iron ore", "&7Combine 4 to make an Iron Ore Chunk");
+        ironOrePiece = new SlimefunItemStack("IRON_ORE_PIECE", Material.GUNPOWDER, "&fIron Ore Piece", "&7Small piece of iron ore", "&7Combine 4 to make an Iron Ore Chunk");
         new SlimefunItem(itemGroup, ironOrePiece, RecipeType.NULL, null).register(plugin);
 
         SlimefunItemStack ironOreChunk = new SlimefunItemStack("IRON_ORE_CHUNK", Material.RAW_IRON, "&fIron Ore Chunk", "&7Compressed iron ore ready for smelting");
@@ -143,7 +142,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         new SlimefunItem(itemGroup, new SlimefunItemStack("IRON_INGOT_FROM_CHUNK", new ItemStack(Material.IRON_INGOT)), RecipeType.SMELTERY, ironSmeltRecipe).register(plugin);
 
         // --- Gold ---
-        goldOrePiece = new SlimefunItemStack("GOLD_ORE_PIECE", Material.RAW_GOLD, "&eGold Ore Piece", "&7Small piece of gold ore", "&7Combine 4 to make a Gold Ore Chunk");
+        goldOrePiece = new SlimefunItemStack("GOLD_ORE_PIECE", Material.GLOWSTONE_DUST, "&eGold Ore Piece", "&7Small piece of gold ore", "&7Combine 4 to make a Gold Ore Chunk");
         new SlimefunItem(itemGroup, goldOrePiece, RecipeType.NULL, null).register(plugin);
 
         SlimefunItemStack goldOreChunk = new SlimefunItemStack("GOLD_ORE_CHUNK", Material.RAW_GOLD, "&eGold Ore Chunk", "&7Compressed gold ore ready for smelting");
@@ -154,7 +153,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         new SlimefunItem(itemGroup, new SlimefunItemStack("GOLD_INGOT_FROM_CHUNK", new ItemStack(Material.GOLD_INGOT)), RecipeType.SMELTERY, goldSmeltRecipe).register(plugin);
 
         // --- Copper ---
-        copperOrePiece = new SlimefunItemStack("COPPER_ORE_PIECE", Material.RAW_COPPER, "&6Copper Ore Piece", "&7Small piece of copper ore", "&7Combine 4 to make a Copper Ore Chunk");
+        copperOrePiece = new SlimefunItemStack("COPPER_ORE_PIECE", Material.GLOWSTONE_DUST, "&6Copper Ore Piece", "&7Small piece of copper ore", "&7Combine 4 to make a Copper Ore Chunk");
         new SlimefunItem(itemGroup, copperOrePiece, RecipeType.NULL, null).register(plugin);
 
         SlimefunItemStack copperOreChunk = new SlimefunItemStack("COPPER_ORE_CHUNK", Material.RAW_COPPER, "&6Copper Ore Chunk", "&7Compressed copper ore ready for smelting");
@@ -165,10 +164,10 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         new SlimefunItem(itemGroup, new SlimefunItemStack("COPPER_INGOT_FROM_CHUNK", SlimefunItems.COPPER_INGOT), RecipeType.SMELTERY, copperSmeltRecipe).register(plugin);
 
         // --- Aluminum ---
-        aluminumOrePiece = new SlimefunItemStack("ALUMINUM_ORE_PIECE", Material.QUARTZ, "&fAluminum Ore Piece", "&7Small piece of aluminum ore", "&7Combine 4 to make an Aluminum Ore Chunk");
+        aluminumOrePiece = new SlimefunItemStack("ALUMINUM_ORE_PIECE", Material.SUGAR, "&fAluminum Ore Piece", "&7Small piece of aluminum ore", "&7Combine 4 to make an Aluminum Ore Chunk");
         new SlimefunItem(itemGroup, aluminumOrePiece, RecipeType.NULL, null).register(plugin);
 
-        SlimefunItemStack aluminumOreChunk = new SlimefunItemStack("ALUMINUM_ORE_CHUNK", Material.QUARTZ, "&fAluminum Ore Chunk", "&7Compressed aluminum ore ready for smelting");
+        SlimefunItemStack aluminumOreChunk = new SlimefunItemStack("ALUMINUM_ORE_CHUNK", Material.CHARCOAL, "&fAluminum Ore Chunk", "&7Compressed aluminum ore ready for smelting");
         ItemStack[] aluminumOreChunkRecipe = { aluminumOrePiece, aluminumOrePiece, null, aluminumOrePiece, aluminumOrePiece, null, null, null, null };
         new SlimefunItem(itemGroup, aluminumOreChunk, RecipeType.ENHANCED_CRAFTING_TABLE, aluminumOreChunkRecipe).register(plugin);
 
@@ -176,10 +175,10 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         new SlimefunItem(itemGroup, new SlimefunItemStack("ALUMINUM_INGOT_FROM_CHUNK", SlimefunItems.ALUMINUM_INGOT), RecipeType.SMELTERY, aluminumSmeltRecipe).register(plugin);
 
         // --- Lead ---
-        leadOrePiece = new SlimefunItemStack("LEAD_ORE_PIECE", Material.COAL, "&8Lead Ore Piece", "&7Small piece of lead ore", "&7Combine 4 to make a Lead Ore Chunk");
+        leadOrePiece = new SlimefunItemStack("LEAD_ORE_PIECE", Material.GUNPOWDER, "&8Lead Ore Piece", "&7Small piece of lead ore", "&7Combine 4 to make a Lead Ore Chunk");
         new SlimefunItem(itemGroup, leadOrePiece, RecipeType.NULL, null).register(plugin);
 
-        SlimefunItemStack leadOreChunk = new SlimefunItemStack("LEAD_ORE_CHUNK", Material.COAL, "&8Lead Ore Chunk", "&7Compressed lead ore ready for smelting");
+        SlimefunItemStack leadOreChunk = new SlimefunItemStack("LEAD_ORE_CHUNK", Material.CHARCOAL, "&8Lead Ore Chunk", "&7Compressed lead ore ready for smelting");
         ItemStack[] leadOreChunkRecipe = { leadOrePiece, leadOrePiece, null, leadOrePiece, leadOrePiece, null, null, null, null };
         new SlimefunItem(itemGroup, leadOreChunk, RecipeType.ENHANCED_CRAFTING_TABLE, leadOreChunkRecipe).register(plugin);
 
@@ -187,10 +186,10 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         new SlimefunItem(itemGroup, new SlimefunItemStack("LEAD_INGOT_FROM_CHUNK", SlimefunItems.LEAD_INGOT), RecipeType.SMELTERY, leadSmeltRecipe).register(plugin);
 
         // --- Silver ---
-        silverOrePiece = new SlimefunItemStack("SILVER_ORE_PIECE", Material.IRON_NUGGET, "&7Silver Ore Piece", "&7Small piece of silver ore", "&7Combine 4 to make a Silver Ore Chunk");
+        silverOrePiece = new SlimefunItemStack("SILVER_ORE_PIECE", Material.SUGAR, "&7Silver Ore Piece", "&7Small piece of silver ore", "&7Combine 4 to make a Silver Ore Chunk");
         new SlimefunItem(itemGroup, silverOrePiece, RecipeType.NULL, null).register(plugin);
 
-        SlimefunItemStack silverOreChunk = new SlimefunItemStack("SILVER_ORE_CHUNK", Material.IRON_NUGGET, "&7Silver Ore Chunk", "&7Compressed silver ore ready for smelting");
+        SlimefunItemStack silverOreChunk = new SlimefunItemStack("SILVER_ORE_CHUNK", Material.CHARCOAL, "&7Silver Ore Chunk", "&7Compressed silver ore ready for smelting");
         ItemStack[] silverOreChunkRecipe = { silverOrePiece, silverOrePiece, null, silverOrePiece, silverOrePiece, null, null, null, null };
         new SlimefunItem(itemGroup, silverOreChunk, RecipeType.ENHANCED_CRAFTING_TABLE, silverOreChunkRecipe).register(plugin);
 
