@@ -45,7 +45,35 @@ public class Sieve extends SlimefunItem {
 
     @Override
     public void preRegister() {
+        // 1. ดักจับตอนคลิกขวา (ของเดิมของนาย)
         addItemHandler((BlockUseHandler) this::onBlockRightClick);
+
+        // 2. เพิ่มตัวดักจับตอนทุบบล็อก (เพื่อคืน Mesh)
+        addItemHandler(new io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler(false, false) {
+            @Override
+            public void onPlayerBreak(org.bukkit.event.block.BlockBreakEvent event, ItemStack item, List<ItemStack> drops) {
+                Block b = event.getBlock();
+                String meshTier = BlockStorage.getLocationInfo(b.getLocation(), "mesh_tier");
+
+                // ถ้ามี Mesh เสียบอยู่ ให้เอา Mesh ไปใส่รวมในกองไอเทมที่จะดรอปออกมา
+                if (meshTier != null) {
+                    switch (meshTier) {
+                        case "STRING":
+                            drops.add(new ItemStack(Material.WHITE_CARPET));
+                            break;
+                        case "FLINT":
+                            drops.add(new ItemStack(Material.LIGHT_GRAY_CARPET));
+                            break;
+                        case "IRON":
+                            drops.add(new ItemStack(Material.GRAY_CARPET));
+                            break;
+                        case "DIAMOND":
+                            drops.add(new ItemStack(Material.LIGHT_BLUE_CARPET));
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     private void onBlockRightClick(PlayerRightClickEvent event) {
