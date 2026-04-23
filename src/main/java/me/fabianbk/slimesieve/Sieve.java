@@ -45,8 +45,10 @@ public class Sieve extends SlimefunItem {
 
     @Override
     public void preRegister() {
+        // Handle right-click for sifting
         addItemHandler((BlockUseHandler) this::onBlockRightClick);
 
+        // Handle block breaking to return the installed mesh
         addItemHandler(new io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler(false, false) {
             @Override
             public void onPlayerBreak(org.bukkit.event.block.BlockBreakEvent event, ItemStack item, List<ItemStack> drops) {
@@ -89,8 +91,8 @@ public class Sieve extends SlimefunItem {
         ItemStack itemInHand = p.getInventory().getItemInMainHand();
         String meshTier = BlockStorage.getLocationInfo(clickedBlock.getLocation(), "mesh_tier");
 
+        // Mesh Installation Logic
         if (meshTier == null) {
-
             SlimefunItem sfItemInHand = SlimefunItem.getByItem(itemInHand);
 
             if (sfItemInHand != null) {
@@ -104,7 +106,6 @@ public class Sieve extends SlimefunItem {
                     }
 
                     String tierToSave = itemId.replace("_MESH", "");
-
                     BlockStorage.addBlockInfo(clickedBlock.getLocation(), "mesh_tier", tierToSave);
                     p.playSound(clickedBlock.getLocation(), Sound.BLOCK_WOOL_PLACE, 1f, 1f);
                     p.sendMessage("§aInstalled " + tierToSave + " Mesh!");
@@ -113,7 +114,7 @@ public class Sieve extends SlimefunItem {
             return;
         }
 
-        // Handle sifting for all mesh tiers
+        // Sifting Logic
         boolean isGravel = itemInHand.getType() == Material.GRAVEL;
         boolean isSand = itemInHand.getType() == Material.SAND;
         boolean isDirt = itemInHand.getType() == Material.DIRT;
@@ -127,12 +128,14 @@ public class Sieve extends SlimefunItem {
     }
 
     private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
+        // Visual effects while sifting
         final int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                 Slimefun.instance(),
                 () -> clickedBlock.getWorld().playEffect(clickedBlock.getLocation(), Effect.STEP_SOUND, clickedBlock.getType()),
                 0L, 10L
         );
 
+        // Delayed task for actual drop logic (5 seconds)
         Bukkit.getScheduler().scheduleSyncDelayedTask(Slimefun.instance(), () -> {
             Bukkit.getScheduler().cancelTask(taskId);
 
@@ -155,109 +158,114 @@ public class Sieve extends SlimefunItem {
             } else {
                 p.playSound(clickedBlock.getLocation(), Sound.BLOCK_GRAVEL_HIT, 1f, 0.5f);
             }
-        }, 100L); // 5 Seconds
+        }, 100L);
+    }
+
+    /**
+     * Helper method to process multiple drop chances for a single item.
+     * This perfectly mimics the Ex Nihilo independent roll system.
+     * Example: addDrop(results, item, 1.0, 0.5) = Guaranteed 1, 50% chance for a 2nd.
+     */
+    private void addDrop(List<ItemStack> results, ItemStack baseItem, double... chances) {
+        int amount = 0;
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+
+        // Roll for each probability provided
+        for (double chance : chances) {
+            if (random.nextDouble() <= chance) {
+                amount++;
+            }
+        }
+
+        // If any rolls were successful, add the combined amount to the results
+        if (amount > 0) {
+            ItemStack drop = baseItem.clone();
+            drop.setAmount(amount);
+            results.add(drop);
+        }
     }
 
     private List<ItemStack> generateOutputs(String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
         List<ItemStack> results = new ArrayList<>();
-        ThreadLocalRandom random = ThreadLocalRandom.current();
 
         switch (meshTier) {
             case "STRING":
-                // STRING MESH - Works on gravel and dirt
                 if (isDirt) {
-                    // DIRT DROPS - Stone pebbles and seeds
-                    // Guaranteed 2 pebbles
-                    ItemStack twoPebbles = stonePebble.clone();
-                    twoPebbles.setAmount(2);
-                    results.add(twoPebbles);
+                    // DIRT DROPS (Stone pebbles: 2x 100%, 2x 50%, 2x 10%)
+                    addDrop(results, stonePebble, 1.0, 1.0, 0.50, 0.50, 0.10, 0.10);
 
-                    // 5 independent rolls for more pebbles
-                    if (random.nextDouble() <= 0.50) results.add(stonePebble.clone()); // 50%
-                    if (random.nextDouble() <= 0.50) results.add(stonePebble.clone()); // 50%
-                    if (random.nextDouble() <= 0.10) results.add(stonePebble.clone()); // 10%
-                    if (random.nextDouble() <= 0.10) results.add(stonePebble.clone()); // 10%
-
-                    // Seeds and crops
-                    if (random.nextDouble() <= 0.04) results.add(new ItemStack(Material.POTATO));
-                    if (random.nextDouble() <= 0.04) results.add(new ItemStack(Material.CARROT));
-                    if (random.nextDouble() <= 0.04) results.add(new ItemStack(Material.SUGAR_CANE));
-                    if (random.nextDouble() <= 0.10) results.add(new ItemStack(Material.WHEAT_SEEDS));
-                    if (random.nextDouble() <= 0.02) results.add(new ItemStack(Material.MELON_SEEDS));
-                    if (random.nextDouble() <= 0.02) results.add(new ItemStack(Material.PUMPKIN_SEEDS));
+                    // Seeds
+                    addDrop(results, new ItemStack(Material.POTATO), 0.04);
+                    addDrop(results, new ItemStack(Material.CARROT), 0.04);
+                    addDrop(results, new ItemStack(Material.SUGAR_CANE), 0.04);
+                    addDrop(results, new ItemStack(Material.WHEAT_SEEDS), 0.10);
+                    addDrop(results, new ItemStack(Material.MELON_SEEDS), 0.02);
+                    addDrop(results, new ItemStack(Material.PUMPKIN_SEEDS), 0.02);
                 } else if (isGravel || isSand) {
-                    // GRAVEL SAND DROPS - Ore pieces
-                    if (random.nextDouble() <= 0.03) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.20) results.add(ironPiece.clone());
-                    if (random.nextDouble() <= 0.08) results.add(copperPiece.clone());
-                    if (random.nextDouble() <= 0.05) results.add(aluminiumPiece.clone());
-                    if (random.nextDouble() <= 0.03) results.add(leadPiece.clone());
-                    if (random.nextDouble() <= 0.04) results.add(silverPiece.clone());
+                    // ORE DROPS (Base chance + a small chance to get a 2nd piece)
+                    addDrop(results, goldPiece, 0.03);
+                    addDrop(results, ironPiece, 0.20);
+                    addDrop(results, copperPiece, 0.08);
+                    addDrop(results, aluminiumPiece, 0.05);
+                    addDrop(results, leadPiece, 0.03);
+                    addDrop(results, silverPiece, 0.04);
+
                     if (isGravel) {
-                        if (random.nextDouble() <= 0.18) results.add(new ItemStack(Material.FLINT));
+                        addDrop(results, new ItemStack(Material.FLINT), 0.18);
                     }
                 }
                 break;
 
             case "FLINT":
-                // FLINT MESH - Works on both gravel and sand
                 if (isGravel) {
-                    // Gravel drops
-                    if (random.nextDouble() <= 0.06) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.22) results.add(ironPiece.clone());
-                    if (random.nextDouble() <= 0.16) results.add(copperPiece.clone());
-                    if (random.nextDouble() <= 0.11) results.add(aluminiumPiece.clone());
-                    if (random.nextDouble() <= 0.06) results.add(leadPiece.clone());
-                    if (random.nextDouble() <= 0.08) results.add(silverPiece.clone());
-                    if (random.nextDouble() <= 0.18) results.add(new ItemStack(Material.COAL));
-                    if (random.nextDouble() <= 0.05) results.add(new ItemStack(Material.LAPIS_LAZULI));
-                } else {
-                    // Sand drops
-                    if (random.nextDouble() <= 0.06) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.22) results.add(ironPiece.clone());
-                    if (random.nextDouble() <= 0.16) results.add(copperPiece.clone());
-                    if (random.nextDouble() <= 0.11) results.add(aluminiumPiece.clone());
-                    if (random.nextDouble() <= 0.06) results.add(leadPiece.clone());
-                    if (random.nextDouble() <= 0.08) results.add(silverPiece.clone());
+                    addDrop(results, goldPiece, 0.06);
+                    addDrop(results, ironPiece, 0.22);
+                    addDrop(results, copperPiece, 0.16);
+                    addDrop(results, aluminiumPiece, 0.11);
+                    addDrop(results, leadPiece, 0.06);
+                    addDrop(results, silverPiece, 0.08);
+                    addDrop(results, new ItemStack(Material.COAL), 0.18);
+                    addDrop(results, new ItemStack(Material.LAPIS_LAZULI), 0.05);
+                } else if (isSand) {
+                    addDrop(results, goldPiece, 0.06);
+                    addDrop(results, ironPiece, 0.22);
+                    addDrop(results, copperPiece, 0.16);
+                    addDrop(results, aluminiumPiece, 0.11);
+                    addDrop(results, leadPiece, 0.06);
+                    addDrop(results, silverPiece, 0.08);
                 }
                 break;
 
             case "IRON":
-                // IRON MESH - Works on both gravel and sand
                 if (isGravel) {
-                    // Gravel drops
-                    if (random.nextDouble() <= 0.10) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.24) results.add(ironPiece.clone());
-                    if (random.nextDouble() <= 0.10) results.add(leadPiece.clone());
-                    if (random.nextDouble() <= 0.01) results.add(new ItemStack(Material.DIAMOND));
-                    if (random.nextDouble() <= 0.10) results.add(new ItemStack(Material.LAPIS_LAZULI));
-                    if (random.nextDouble() <= 0.18) results.add(new ItemStack(Material.COAL));
-                } else {
-                    // Sand drops
-                    if (random.nextDouble() <= 0.10) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.24) results.add(ironPiece.clone());
-                    if (random.nextDouble() <= 0.10) results.add(leadPiece.clone());
-                    if (random.nextDouble() <= 0.05) results.add(new ItemStack(Material.REDSTONE));
-                    if (random.nextDouble() <= 0.16) results.add(new ItemStack(Material.GUNPOWDER));
-                    if (random.nextDouble() <= 0.05) results.add(new ItemStack(Material.BLAZE_POWDER));
+                    addDrop(results, goldPiece, 0.10);
+                    addDrop(results, ironPiece, 0.24);
+                    addDrop(results, leadPiece, 0.10);
+                    addDrop(results, new ItemStack(Material.DIAMOND), 0.01);
+                    addDrop(results, new ItemStack(Material.LAPIS_LAZULI), 0.10);
+                    addDrop(results, new ItemStack(Material.COAL), 0.18);
+                } else if (isSand) {
+                    addDrop(results, goldPiece, 0.10);
+                    addDrop(results, ironPiece, 0.24);
+                    addDrop(results, leadPiece, 0.10);
+                    addDrop(results, new ItemStack(Material.REDSTONE), 0.05);
+                    addDrop(results, new ItemStack(Material.GUNPOWDER), 0.16);
+                    addDrop(results, new ItemStack(Material.BLAZE_POWDER), 0.05);
                 }
                 break;
 
             case "DIAMOND":
-                // DIAMOND MESH - Works on both gravel and sand
                 if (isGravel) {
-                    // Gravel drops
-                    if (random.nextDouble() <= 0.15) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.03) results.add(new ItemStack(Material.DIAMOND));
-                    if (random.nextDouble() <= 0.01) results.add(new ItemStack(Material.EMERALD));
-                    if (random.nextDouble() <= 0.12) results.add(new ItemStack(Material.LAPIS_LAZULI));
-                    if (random.nextDouble() <= 0.22) results.add(new ItemStack(Material.COAL));
-                } else {
-                    // Sand drops
-                    if (random.nextDouble() <= 0.15) results.add(goldPiece.clone());
-                    if (random.nextDouble() <= 0.10) results.add(new ItemStack(Material.REDSTONE));
-                    if (random.nextDouble() <= 0.20) results.add(new ItemStack(Material.GUNPOWDER));
-                    if (random.nextDouble() <= 0.10) results.add(new ItemStack(Material.BLAZE_POWDER));
+                    addDrop(results, goldPiece, 0.15);
+                    addDrop(results, new ItemStack(Material.DIAMOND), 0.03);
+                    addDrop(results, new ItemStack(Material.EMERALD), 0.01);
+                    addDrop(results, new ItemStack(Material.LAPIS_LAZULI), 0.12);
+                    addDrop(results, new ItemStack(Material.COAL), 0.22);
+                } else if (isSand) {
+                    addDrop(results, goldPiece, 0.15);
+                    addDrop(results, new ItemStack(Material.REDSTONE), 0.10);
+                    addDrop(results, new ItemStack(Material.GUNPOWDER), 0.20);
+                    addDrop(results, new ItemStack(Material.BLAZE_POWDER), 0.10);
                 }
                 break;
         }
