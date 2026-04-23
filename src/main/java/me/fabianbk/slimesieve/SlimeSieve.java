@@ -204,5 +204,45 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
 
         ItemStack[] silverSmeltRecipe = {silverOreChunk, null, null, null, null, null, null, null, null};
         new SlimefunItem(itemGroup, new SlimefunItemStack("SILVER_INGOT_FROM_CHUNK", SlimefunItems.SILVER_INGOT), RecipeType.SMELTERY, silverSmeltRecipe).register(plugin);
+
+        // 1. Wooden Hammer
+        SlimefunItemStack woodenHammer = new SlimefunItemStack("WOODEN_HAMMER", Material.WOODEN_PICKAXE, "&fWooden Hammer", "&7Basic hammer");
+        ItemStack[] woodenRecipe = {
+                null, new ItemStack(Material.OAK_PLANKS), null,
+                null, new ItemStack(Material.STICK), new ItemStack(Material.OAK_PLANKS),
+                new ItemStack(Material.STICK), null, null
+        };
+        new Hammer(itemGroup, woodenHammer, RecipeType.ENHANCED_CRAFTING_TABLE, woodenRecipe,
+                Material.WOODEN_PICKAXE, Material.WOODEN_SHOVEL, plugin.getJavaPlugin()).register(plugin);
+
+        // 2. Stone Hammer
+        SlimefunItemStack stoneHammer = new SlimefunItemStack("STONE_HAMMER", Material.STONE_PICKAXE, "&7Stone Hammer", "&7Faster hammer");
+        ItemStack[] stoneRecipe = {
+                null, new ItemStack(Material.COBBLESTONE), null,
+                null, new ItemStack(Material.STICK), new ItemStack(Material.COBBLESTONE),
+                new ItemStack(Material.STICK), null, null
+        };
+        new Hammer(itemGroup, stoneHammer, RecipeType.ENHANCED_CRAFTING_TABLE, stoneRecipe,
+                Material.STONE_PICKAXE, Material.STONE_SHOVEL, plugin.getJavaPlugin()).register(plugin);
+
+        // 3. Iron Hammer
+        SlimefunItemStack ironHammer = new SlimefunItemStack("IRON_HAMMER", Material.IRON_PICKAXE, "&7Iron Hammer", "&7Efficient hammer");
+        ItemStack[] ironRecipe = {
+                null, new ItemStack(Material.IRON_INGOT), null,
+                null, new ItemStack(Material.STICK), new ItemStack(Material.IRON_INGOT),
+                new ItemStack(Material.STICK), null, null
+        };
+        new Hammer(itemGroup, ironHammer, RecipeType.ENHANCED_CRAFTING_TABLE, ironRecipe,
+                Material.IRON_PICKAXE, Material.IRON_SHOVEL, plugin.getJavaPlugin()).register(plugin);
+
+        // 3. Diamond Hammer
+        SlimefunItemStack diamondHammer = new SlimefunItemStack("DIAMOND_HAMMER", Material.DIAMOND_PICKAXE, "&7Diamond Hammer", "&7Fastest hammer");
+        ItemStack[] diamondRecipe = {
+                null, new ItemStack(Material.DIAMOND), null,
+                null, new ItemStack(Material.STICK), new ItemStack(Material.DIAMOND),
+                new ItemStack(Material.STICK), null, null
+        };
+        new Hammer(itemGroup, diamondHammer, RecipeType.ENHANCED_CRAFTING_TABLE, diamondRecipe,
+                Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, plugin.getJavaPlugin()).register(plugin);
     }
 }
