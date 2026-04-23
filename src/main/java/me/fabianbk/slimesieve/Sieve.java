@@ -127,7 +127,6 @@ public class Sieve extends SlimefunItem {
     }
 
     private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
-        // เล่น Effect ตอนกำลังร่อน (Repeating Task)
         final int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                 Slimefun.instance(),
                 () -> clickedBlock.getWorld().playEffect(clickedBlock.getLocation(), Effect.STEP_SOUND, clickedBlock.getType()),
@@ -186,17 +185,18 @@ public class Sieve extends SlimefunItem {
                     if (random.nextDouble() <= 0.10) results.add(new ItemStack(Material.WHEAT_SEEDS));
                     if (random.nextDouble() <= 0.02) results.add(new ItemStack(Material.MELON_SEEDS));
                     if (random.nextDouble() <= 0.02) results.add(new ItemStack(Material.PUMPKIN_SEEDS));
-                } else if (isGravel) {
-                    // GRAVEL DROPS - Ore pieces
+                } else if (isGravel || isSand) {
+                    // GRAVEL SAND DROPS - Ore pieces
                     if (random.nextDouble() <= 0.03) results.add(goldPiece.clone());
                     if (random.nextDouble() <= 0.20) results.add(ironPiece.clone());
                     if (random.nextDouble() <= 0.08) results.add(copperPiece.clone());
                     if (random.nextDouble() <= 0.05) results.add(aluminiumPiece.clone());
                     if (random.nextDouble() <= 0.03) results.add(leadPiece.clone());
                     if (random.nextDouble() <= 0.04) results.add(silverPiece.clone());
-                    if (random.nextDouble() <= 0.18) results.add(new ItemStack(Material.FLINT));
+                    if (isGravel) {
+                        if (random.nextDouble() <= 0.18) results.add(new ItemStack(Material.FLINT));
+                    }
                 }
-                // Sand does nothing for STRING mesh
                 break;
 
             case "FLINT":
