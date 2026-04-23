@@ -28,11 +28,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Sieve extends SlimefunItem {
 
-    private final ItemStack goldPiece, ironPiece, copperPiece, aluminiumPiece, leadPiece, silverPiece;
+    private final ItemStack goldPiece, ironPiece, copperPiece, aluminiumPiece, leadPiece, silverPiece, stonePebble;
 
     public Sieve(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                  ItemStack goldPiece, ItemStack ironPiece, ItemStack copperPiece,
-                 ItemStack aluminiumPiece, ItemStack leadPiece, ItemStack silverPiece) {
+                 ItemStack aluminiumPiece, ItemStack leadPiece, ItemStack silverPiece, ItemStack stonePebble) {
         super(itemGroup, item, recipeType, recipe);
         this.goldPiece = goldPiece;
         this.ironPiece = ironPiece;
@@ -40,6 +40,7 @@ public class Sieve extends SlimefunItem {
         this.aluminiumPiece = aluminiumPiece;
         this.leadPiece = leadPiece;
         this.silverPiece = silverPiece;
+        this.stonePebble = stonePebble;
     }
 
     @Override
@@ -115,16 +116,18 @@ public class Sieve extends SlimefunItem {
         // Handle sifting for all mesh tiers
         boolean isGravel = itemInHand.getType() == Material.GRAVEL;
         boolean isSand = itemInHand.getType() == Material.SAND;
+        boolean isDirt = itemInHand.getType() == Material.DIRT;
 
-        if (isGravel || isSand) {
+        if (isGravel || isSand || isDirt) {
             if (p.getGameMode() != GameMode.CREATIVE) {
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
             }
-            startSiftingProcess(p, clickedBlock, meshTier, isGravel);
+            startSiftingProcess(p, clickedBlock, meshTier, isGravel, isSand, isDirt);
         }
     }
 
-    private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel) {
+    private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
+        // เล่น Effect ตอนกำลังร่อน (Repeating Task)
         final int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
                 Slimefun.instance(),
                 () -> clickedBlock.getWorld().playEffect(clickedBlock.getLocation(), Effect.STEP_SOUND, clickedBlock.getType()),
@@ -134,7 +137,7 @@ public class Sieve extends SlimefunItem {
         Bukkit.getScheduler().scheduleSyncDelayedTask(Slimefun.instance(), () -> {
             Bukkit.getScheduler().cancelTask(taskId);
 
-            List<ItemStack> outputs = generateOutputs(meshTier, isGravel);
+            List<ItemStack> outputs = generateOutputs(meshTier, isGravel, isSand, isDirt);
             Location dropLoc = clickedBlock.getLocation().add(0.5, 1.0, 0.5);
 
             if (!outputs.isEmpty()) {
@@ -156,24 +159,44 @@ public class Sieve extends SlimefunItem {
         }, 100L); // 5 Seconds
     }
 
-    private List<ItemStack> generateOutputs(String meshTier, boolean isGravel) {
+    private List<ItemStack> generateOutputs(String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
         List<ItemStack> results = new ArrayList<>();
         ThreadLocalRandom random = ThreadLocalRandom.current();
 
         switch (meshTier) {
             case "STRING":
-                // STRING MESH - Base rates
-                if (random.nextDouble() <= 0.03) results.add(goldPiece.clone());
-                if (random.nextDouble() <= 0.20) results.add(ironPiece.clone());
-                if (random.nextDouble() <= 0.08) results.add(copperPiece.clone());
-                if (random.nextDouble() <= 0.05) results.add(aluminiumPiece.clone());
-                if (random.nextDouble() <= 0.03) results.add(leadPiece.clone());
-                if (random.nextDouble() <= 0.04) results.add(silverPiece.clone());
+                // STRING MESH - Works on gravel and dirt
+                if (isDirt) {
+                    // DIRT DROPS - Stone pebbles and seeds
+                    // Guaranteed 2 pebbles
+                    ItemStack twoPebbles = stonePebble.clone();
+                    twoPebbles.setAmount(2);
+                    results.add(twoPebbles);
 
-                // Flint only from gravel
-                if (isGravel && random.nextDouble() <= 0.18) {
-                    results.add(new ItemStack(Material.FLINT));
+                    // 5 independent rolls for more pebbles
+                    if (random.nextDouble() <= 0.50) results.add(stonePebble.clone()); // 50%
+                    if (random.nextDouble() <= 0.50) results.add(stonePebble.clone()); // 50%
+                    if (random.nextDouble() <= 0.10) results.add(stonePebble.clone()); // 10%
+                    if (random.nextDouble() <= 0.10) results.add(stonePebble.clone()); // 10%
+
+                    // Seeds and crops
+                    if (random.nextDouble() <= 0.04) results.add(new ItemStack(Material.POTATO));
+                    if (random.nextDouble() <= 0.04) results.add(new ItemStack(Material.CARROT));
+                    if (random.nextDouble() <= 0.04) results.add(new ItemStack(Material.SUGAR_CANE));
+                    if (random.nextDouble() <= 0.10) results.add(new ItemStack(Material.WHEAT_SEEDS));
+                    if (random.nextDouble() <= 0.02) results.add(new ItemStack(Material.MELON_SEEDS));
+                    if (random.nextDouble() <= 0.02) results.add(new ItemStack(Material.PUMPKIN_SEEDS));
+                } else if (isGravel) {
+                    // GRAVEL DROPS - Ore pieces
+                    if (random.nextDouble() <= 0.03) results.add(goldPiece.clone());
+                    if (random.nextDouble() <= 0.20) results.add(ironPiece.clone());
+                    if (random.nextDouble() <= 0.08) results.add(copperPiece.clone());
+                    if (random.nextDouble() <= 0.05) results.add(aluminiumPiece.clone());
+                    if (random.nextDouble() <= 0.03) results.add(leadPiece.clone());
+                    if (random.nextDouble() <= 0.04) results.add(silverPiece.clone());
+                    if (random.nextDouble() <= 0.18) results.add(new ItemStack(Material.FLINT));
                 }
+                // Sand does nothing for STRING mesh
                 break;
 
             case "FLINT":

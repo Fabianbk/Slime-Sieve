@@ -22,9 +22,10 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
     private SlimefunItemStack ironOrePiece;
     private SlimefunItemStack goldOrePiece;
     private SlimefunItemStack copperOrePiece;
-    private SlimefunItemStack aluminumOrePiece; // ระวังตัวสะกด! ของนายใช้ aluminum
+    private SlimefunItemStack aluminumOrePiece;
     private SlimefunItemStack leadOrePiece;
     private SlimefunItemStack silverOrePiece;
+    private SlimefunItemStack stonePebble;
 
     @Override
     public void onEnable() {
@@ -47,7 +48,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
 
         // ตอนนี้เรามีตัวแปรแร่ครบแล้ว ก็โยนใส่ Constructor ได้เลย! (ครบ 10 ตัว)
         Sieve sieve = new Sieve(sieveGroup, sieveItem, RecipeType.ENHANCED_CRAFTING_TABLE, sieveRecipe,
-                goldOrePiece, ironOrePiece, copperOrePiece, aluminumOrePiece, leadOrePiece, silverOrePiece);
+                goldOrePiece, ironOrePiece, copperOrePiece, aluminumOrePiece, leadOrePiece, silverOrePiece,stonePebble);
         sieve.register(this);
     }
 
@@ -115,8 +116,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
                 "DIAMOND_MESH",
                 Material.LIGHT_BLUE_CARPET,
                 "&bDiamond Mesh",
-                "&7Ultimate mesh for maximum sieving efficiency",
-                "&7Chance: +15%"
+                "&7Ultimate mesh for maximum sieving efficiency"
         );
         ItemStack[] diamondMeshRecipe = {
                 new ItemStack(Material.DIAMOND), new ItemStack(Material.DIAMOND), new ItemStack(Material.DIAMOND),
@@ -125,6 +125,15 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         };
         new SlimefunItem(itemGroup, diamondMesh, RecipeType.ENHANCED_CRAFTING_TABLE, diamondMeshRecipe).register(plugin);
 
+        // ==========================================
+        // ===== STONE PEBBLE (for dirt sifting) =====
+        // ==========================================
+        stonePebble = new SlimefunItemStack("STONE_PEBBLE", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWU1NGFiYmM2NWIxM2E0MmMyOTU5MGEwY2Y5ZDNlMDA3MDJkMWU2MGQ5NzRmOTI4NmE3YzE3MjY3ZjIyODJjOSJ9fX0=", "&7Stone Pebble", "&7Small stone fragment from dirt", "&7Combine 4 to make Cobblestone");
+        new SlimefunItem(itemGroup, stonePebble, RecipeType.NULL, null).register(plugin);
+
+        // Recipe: 4 Stone Pebbles → 1 Cobblestone
+        ItemStack[] pebbleToCobbleRecipe = { stonePebble, stonePebble, null, stonePebble, stonePebble, null, null, null, null };
+        new SlimefunItem(itemGroup, new SlimefunItemStack("COBBLESTONE_FROM_PEBBLES", new ItemStack(Material.COBBLESTONE)), RecipeType.ENHANCED_CRAFTING_TABLE, pebbleToCobbleRecipe).register(plugin);
 
         // ==========================================
         // ===== ORE PROCESSING ITEMS =====
