@@ -226,7 +226,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
                 Material.STONE_PICKAXE, Material.STONE_SHOVEL, plugin.getJavaPlugin()).register(plugin);
 
         // 3. Iron Hammer
-        SlimefunItemStack ironHammer = new SlimefunItemStack("IRON_HAMMER", Material.IRON_PICKAXE, "&7Iron Hammer", "&7Efficient hammer");
+        SlimefunItemStack ironHammer = new SlimefunItemStack("IRON_HAMMER", Material.IRON_PICKAXE, "&fIron Hammer", "&7Efficient hammer");
         ItemStack[] ironRecipe = {
                 null, new ItemStack(Material.IRON_INGOT), null,
                 null, new ItemStack(Material.STICK), new ItemStack(Material.IRON_INGOT),
@@ -236,7 +236,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
                 Material.IRON_PICKAXE, Material.IRON_SHOVEL, plugin.getJavaPlugin()).register(plugin);
 
         // 3. Diamond Hammer
-        SlimefunItemStack diamondHammer = new SlimefunItemStack("DIAMOND_HAMMER", Material.DIAMOND_PICKAXE, "&7Diamond Hammer", "&7Fastest hammer");
+        SlimefunItemStack diamondHammer = new SlimefunItemStack("DIAMOND_HAMMER", Material.DIAMOND_PICKAXE, "&bDiamond Hammer", "&7Fastest hammer");
         ItemStack[] diamondRecipe = {
                 null, new ItemStack(Material.DIAMOND), null,
                 null, new ItemStack(Material.STICK), new ItemStack(Material.DIAMOND),
