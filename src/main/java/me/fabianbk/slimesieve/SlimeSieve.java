@@ -244,5 +244,39 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         };
         new Hammer(itemGroup, diamondHammer, RecipeType.ENHANCED_CRAFTING_TABLE, diamondRecipe,
                 Material.DIAMOND_PICKAXE, Material.DIAMOND_SHOVEL, plugin.getJavaPlugin()).register(plugin);
+
+        // ==========================================
+        // ===== CROOK & SILKWORM =====
+        // ==========================================
+
+        // 1. Silkworm
+        SlimefunItemStack silkwormItem = new SlimefunItemStack(
+                "SILKWORM",
+                "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGY4YTY0ZmE2YmQ2ZjZhYmJhNzA1MzNjMTkxNmM0Y2FkMmZhMTJjNzMwM2Q4OTM0YTc5OWE5MTUxNTRiODBmYSJ9fX0=",
+                "&fSilkworm",
+                "&7Right-click on leaves to infest them",
+                "&7Break infested leaves with a Crook for string"
+        );
+        new Silkworm(itemGroup, silkwormItem, RecipeType.NULL, null).register(plugin);
+
+        // 2. Wooden Crook
+        SlimefunItemStack woodenCrook = new SlimefunItemStack(
+                "WOODEN_CROOK",
+                Material.WOODEN_HOE,
+                "&fWooden Crook",
+                "&7Breaks leaves to find Silkworms",
+                "&7Harvests string from infested leaves"
+        );
+        // Recipe: A hook shape made of sticks
+        ItemStack[] crookRecipe = {
+                new ItemStack(Material.STICK), new ItemStack(Material.STICK), null,
+                null,                          new ItemStack(Material.STICK), null,
+                null,                          new ItemStack(Material.STICK), null
+        };
+
+        // We pass the silkwormItem, WOODEN_HOE, WOODEN_SWORD, and the plugin instance into the Crook constructor
+        new Crook(itemGroup, woodenCrook, RecipeType.ENHANCED_CRAFTING_TABLE, crookRecipe,
+                silkwormItem, Material.WOODEN_HOE, Material.WOODEN_SWORD, plugin.getJavaPlugin()).register(plugin);
+
     }
 }
