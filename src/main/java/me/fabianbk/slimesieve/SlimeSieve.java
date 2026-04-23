@@ -176,7 +176,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         aluminumOrePiece = new SlimefunItemStack("ALUMINUM_ORE_PIECE", Material.SUGAR, "&fAluminum Ore Piece", "&7Small piece of aluminum ore", "&7Combine 4 to make an Aluminum Ore Chunk");
         new SlimefunItem(itemGroup, aluminumOrePiece, RecipeType.NULL, null).register(plugin);
 
-        SlimefunItemStack aluminumOreChunk = new SlimefunItemStack("ALUMINUM_ORE_CHUNK", Material.CHARCOAL, "&fAluminum Ore Chunk", "&7Compressed aluminum ore ready for smelting");
+        SlimefunItemStack aluminumOreChunk = new SlimefunItemStack("ALUMINUM_ORE_CHUNK", Material.FIREWORK_STAR, "&fAluminum Ore Chunk", "&7Compressed aluminum ore ready for smelting");
         ItemStack[] aluminumOreChunkRecipe = { aluminumOrePiece, aluminumOrePiece, null, aluminumOrePiece, aluminumOrePiece, null, null, null, null };
         new SlimefunItem(itemGroup, aluminumOreChunk, RecipeType.ENHANCED_CRAFTING_TABLE, aluminumOreChunkRecipe).register(plugin);
 
@@ -187,7 +187,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         leadOrePiece = new SlimefunItemStack("LEAD_ORE_PIECE", Material.GUNPOWDER, "&8Lead Ore Piece", "&7Small piece of lead ore", "&7Combine 4 to make a Lead Ore Chunk");
         new SlimefunItem(itemGroup, leadOrePiece, RecipeType.NULL, null).register(plugin);
 
-        SlimefunItemStack leadOreChunk = new SlimefunItemStack("LEAD_ORE_CHUNK", Material.CHARCOAL, "&8Lead Ore Chunk", "&7Compressed lead ore ready for smelting");
+        SlimefunItemStack leadOreChunk = new SlimefunItemStack("LEAD_ORE_CHUNK", Material.FIREWORK_STAR, "&8Lead Ore Chunk", "&7Compressed lead ore ready for smelting");
         ItemStack[] leadOreChunkRecipe = { leadOrePiece, leadOrePiece, null, leadOrePiece, leadOrePiece, null, null, null, null };
         new SlimefunItem(itemGroup, leadOreChunk, RecipeType.ENHANCED_CRAFTING_TABLE, leadOreChunkRecipe).register(plugin);
 
@@ -198,7 +198,7 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         silverOrePiece = new SlimefunItemStack("SILVER_ORE_PIECE", Material.SUGAR, "&7Silver Ore Piece", "&7Small piece of silver ore", "&7Combine 4 to make a Silver Ore Chunk");
         new SlimefunItem(itemGroup, silverOrePiece, RecipeType.NULL, null).register(plugin);
 
-        SlimefunItemStack silverOreChunk = new SlimefunItemStack("SILVER_ORE_CHUNK", Material.CHARCOAL, "&7Silver Ore Chunk", "&7Compressed silver ore ready for smelting");
+        SlimefunItemStack silverOreChunk = new SlimefunItemStack("SILVER_ORE_CHUNK", Material.FIREWORK_STAR, "&7Silver Ore Chunk", "&7Compressed silver ore ready for smelting");
         ItemStack[] silverOreChunkRecipe = { silverOrePiece, silverOrePiece, null, silverOrePiece, silverOrePiece, null, null, null, null };
         new SlimefunItem(itemGroup, silverOreChunk, RecipeType.ENHANCED_CRAFTING_TABLE, silverOreChunkRecipe).register(plugin);
 
