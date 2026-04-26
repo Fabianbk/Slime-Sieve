@@ -278,5 +278,25 @@ public class SlimeSieve extends JavaPlugin implements SlimefunAddon {
         new Crook(itemGroup, woodenCrook, RecipeType.ENHANCED_CRAFTING_TABLE, crookRecipe,
                 silkwormItem, Material.WOODEN_HOE, Material.WOODEN_SWORD, plugin.getJavaPlugin()).register(plugin);
 
+        // ==========================================
+        // ===== COMPOST BARREL =====
+        // ==========================================
+
+        SlimefunItemStack compostBarrelItem = new SlimefunItemStack(
+                "COMPOST_BARREL",
+                Material.COMPOSTER,
+                "&fCompost Barrel",
+                "&7Turns organic matter into Dirt",
+                "&7Right-click with 8x Leaves, Saplings, Wheat, etc."
+        );
+
+        // Super cheap early game recipe (Wood Planks and Slabs)
+        ItemStack[] compostBarrelRecipe = {
+                new ItemStack(Material.OAK_SLAB), null, new ItemStack(Material.OAK_SLAB),
+                new ItemStack(Material.OAK_PLANKS), null, new ItemStack(Material.OAK_PLANKS),
+                new ItemStack(Material.OAK_PLANKS), new ItemStack(Material.OAK_SLAB), new ItemStack(Material.OAK_PLANKS)
+        };
+
+        new CompostBarrel(itemGroup, compostBarrelItem, RecipeType.ENHANCED_CRAFTING_TABLE, compostBarrelRecipe).register(plugin);
     }
 }
