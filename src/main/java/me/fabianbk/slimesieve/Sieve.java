@@ -120,11 +120,63 @@ public class Sieve extends SlimefunItem {
         boolean isDirt = itemInHand.getType() == Material.DIRT;
 
         if (isGravel || isSand || isDirt) {
+
+            // Validation check: Prevent sifting dirt with advanced meshes
+            if (isDirt && !meshTier.equals("STRING")) {
+                p.sendMessage("§cThis mesh tier cannot sift Dirt!");
+                p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+                return;
+            }
+
+            // FIX: Store the material type BEFORE we consume the item
+            Material siftedMaterial = itemInHand.getType();
+
+            // Consume the item
             if (p.getGameMode() != GameMode.CREATIVE) {
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
             }
-            startSiftingProcess(p, clickedBlock, meshTier, isGravel, isSand, isDirt);
+
+            // Pass the safely stored material to the animation process
+            startSiftingProcess(p, clickedBlock, meshTier, isGravel, isSand, isDirt, siftedMaterial);
         }
+    }
+
+    // Notice the new parameter: Material siftedMaterial
+    private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel, boolean isSand, boolean isDirt, Material siftedMaterial) {
+
+        Location particleLoc = clickedBlock.getLocation().add(0.5, 1.0, 0.5);
+
+        // Visual effects while sifting - Now uses siftedMaterial instead of clickedBlock.getType()
+        final int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
+                Slimefun.instance(),
+                () -> clickedBlock.getWorld().playEffect(particleLoc, Effect.STEP_SOUND, siftedMaterial),
+                0L, 10L
+        );
+
+        // Delayed task for actual drop logic (5 seconds)
+        Bukkit.getScheduler().scheduleSyncDelayedTask(Slimefun.instance(), () -> {
+            Bukkit.getScheduler().cancelTask(taskId);
+
+            List<ItemStack> outputs = generateOutputs(meshTier, isGravel, isSand, isDirt);
+            Location dropLoc = clickedBlock.getLocation().add(0.5, 1.0, 0.5);
+
+            if (!outputs.isEmpty()) {
+                for (ItemStack out : outputs) {
+                    Optional<Inventory> outputChest = OutputChest.findOutputChestFor(
+                            clickedBlock.getRelative(BlockFace.DOWN), out
+                    );
+
+                    if (outputChest.isPresent()) {
+                        outputChest.get().addItem(out.clone());
+                    } else {
+                        clickedBlock.getWorld().dropItemNaturally(dropLoc, out.clone());
+                    }
+                }
+                p.playSound(clickedBlock.getLocation(), Sound.BLOCK_GRAVEL_BREAK, 1f, 1.5f);
+            } else {
+                p.playSound(clickedBlock.getLocation(), Sound.BLOCK_GRAVEL_HIT, 1f, 0.5f);
+            }
+        }, 100L);
     }
 
     private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
