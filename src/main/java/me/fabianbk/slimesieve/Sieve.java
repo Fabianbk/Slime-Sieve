@@ -162,43 +162,7 @@ public class Sieve extends SlimefunItem {
 
             if (!outputs.isEmpty()) {
                 for (ItemStack out : outputs) {
-                    Optional<Inventory> outputChest = OutputChest.findOutputChestFor(
-                            clickedBlock.getRelative(BlockFace.DOWN), out
-                    );
-
-                    if (outputChest.isPresent()) {
-                        outputChest.get().addItem(out.clone());
-                    } else {
-                        clickedBlock.getWorld().dropItemNaturally(dropLoc, out.clone());
-                    }
-                }
-                p.playSound(clickedBlock.getLocation(), Sound.BLOCK_GRAVEL_BREAK, 1f, 1.5f);
-            } else {
-                p.playSound(clickedBlock.getLocation(), Sound.BLOCK_GRAVEL_HIT, 1f, 0.5f);
-            }
-        }, 100L);
-    }
-
-    private void startSiftingProcess(Player p, Block clickedBlock, String meshTier, boolean isGravel, boolean isSand, boolean isDirt) {
-        // Visual effects while sifting
-        final int taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(
-                Slimefun.instance(),
-                () -> clickedBlock.getWorld().playEffect(clickedBlock.getLocation(), Effect.STEP_SOUND, clickedBlock.getType()),
-                0L, 10L
-        );
-
-        // Delayed task for actual drop logic (5 seconds)
-        Bukkit.getScheduler().scheduleSyncDelayedTask(Slimefun.instance(), () -> {
-            Bukkit.getScheduler().cancelTask(taskId);
-
-            List<ItemStack> outputs = generateOutputs(meshTier, isGravel, isSand, isDirt);
-            Location dropLoc = clickedBlock.getLocation().add(0.5, 1.0, 0.5);
-
-            if (!outputs.isEmpty()) {
-                for (ItemStack out : outputs) {
-                    Optional<Inventory> outputChest = OutputChest.findOutputChestFor(
-                            clickedBlock.getRelative(BlockFace.DOWN), out
-                    );
+                    Optional<Inventory> outputChest = OutputChest.findOutputChestFor(clickedBlock, out);
 
                     if (outputChest.isPresent()) {
                         outputChest.get().addItem(out.clone());

@@ -131,8 +131,7 @@ public class CompostBarrel extends SlimefunItem implements RecipeDisplayItem {
     }
 
     private void pushOutput(Block b, ItemStack output) {
-        // OutputChest compatibility (Drops item into a chest below if it exists)
-        Optional<Inventory> outputChest = OutputChest.findOutputChestFor(b.getRelative(BlockFace.DOWN), output);
+        Optional<Inventory> outputChest = OutputChest.findOutputChestFor(b, output);
 
         if (outputChest.isPresent()) {
             outputChest.get().addItem(output);
