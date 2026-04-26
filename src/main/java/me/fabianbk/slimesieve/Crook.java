@@ -67,6 +67,21 @@ public class Crook extends SlimefunItem implements Listener {
         }
     }
 
+    // Helper method to determine the correct sapling for a given leaf type
+    private Material getSaplingFor(Material leaf) {
+        switch (leaf) {
+            case OAK_LEAVES: return Material.OAK_SAPLING;
+            case SPRUCE_LEAVES: return Material.SPRUCE_SAPLING;
+            case BIRCH_LEAVES: return Material.BIRCH_SAPLING;
+            case JUNGLE_LEAVES: return Material.JUNGLE_SAPLING;
+            case ACACIA_LEAVES: return Material.ACACIA_SAPLING;
+            case DARK_OAK_LEAVES: return Material.DARK_OAK_SAPLING;
+            case AZALEA_LEAVES: return Material.AZALEA;
+            case FLOWERING_AZALEA_LEAVES: return Material.FLOWERING_AZALEA;
+            default: return null;
+        }
+    }
+
     // Triggered when a block is successfully broken
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent e) {
@@ -84,6 +99,14 @@ public class Crook extends SlimefunItem implements Listener {
                 // 10% chance to drop a Silkworm
                 if (ThreadLocalRandom.current().nextDouble() <= 0.10) {
                     b.getWorld().dropItemNaturally(loc, silkworm.clone());
+                }
+
+                // 25% chance to drop the corresponding Sapling (Increased rate for Crook)
+                if (ThreadLocalRandom.current().nextDouble() <= 0.25) {
+                    Material sapling = getSaplingFor(type);
+                    if (sapling != null) {
+                        b.getWorld().dropItemNaturally(loc, new ItemStack(sapling));
+                    }
                 }
             }
             // 2. Breaking infested leaves (represented by Cobweb)
